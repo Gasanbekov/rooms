@@ -1,0 +1,25 @@
+{
+  "name": "rooms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gasanbekov/rooms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Gasanbekov/rooms/issues"
+  },
+  "homepage": "https://github.com/Gasanbekov/rooms#readme",
+  "private": "true",
+  "engines": {
+    "node": ">=24"
+  }
+}
