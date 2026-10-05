@@ -1,8 +1,7 @@
 {
   "name": "rooms",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Real-time chat with rooms: learning project",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,16 +9,16 @@
     "type": "git",
     "url": "git+https://github.com/Gasanbekov/rooms.git"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "bugs": {
     "url": "https://github.com/Gasanbekov/rooms/issues"
   },
   "homepage": "https://github.com/Gasanbekov/rooms#readme",
-  "private": "true",
+  "private": true,
   "engines": {
     "node": ">=24"
-  }
+  },
+  "discription": "Reall-time chat with rooms: learning project"
 }
