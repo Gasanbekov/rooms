@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "noEmit": true,
+    "module": "NodeNext",
+    "target": "ES2024",
+    "strict": true,
+    "types": ["node"],
+    "maxNodeModuleJsDepth": 0
+  },
+
+  "include": ["src", "test"]
+}

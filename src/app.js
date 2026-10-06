@@ -2,7 +2,7 @@ import http from 'node:http';
 
 export function createApp() {
   return http.createServer((req, res) => {
-    const { pathname } = new URL(req.url, 'http://localhost');
+    const { pathname } = new URL(req.url ?? '/', 'http://localhost');
 
     if (req.method === 'GET' && pathname === '/health') {
       res.writeHead(200, { 'Content-Type': 'application/json' });

@@ -1,26 +1,34 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { createApp } from '../src/app.js';
+import { once } from 'node:events';
 
+/** @type {import('node:http').Server} */
 let server;
+
+/** @type {string} */
 let baseUrl;
 
 before(async () => {
   server = createApp();
-  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
-  baseUrl = `http://127.0.0.1:${server.address().port}`;
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const address = server.address();
+  assert.ok(address !== null && typeof address === 'object');
+  baseUrl = `http://127.0.0.1:${address.port}`;
 });
 
 after(async () => {
   server.closeAllConnections();
-  await new Promise((resolve) => server.close(resolve));
+  server.close();
+  await once(server, 'close');
 });
 
 test('GET /health responds 200 with {"status":"ok"}', async () => {
   const response = await fetch(`${baseUrl}/health`);
 
   assert.equal(response.status, 200);
-  assert.match(response.headers.get('content-type'), /^application\/json/);
+  assert.match(response.headers.get('content-type') ?? '', /^application\/json/);
   assert.deepEqual(await response.json(), { status: 'ok' });
 });
 
