@@ -25,7 +25,7 @@
   "engines": {
     "node": ">=24"
   },
-  "discription": "Reall-time chat with rooms: learning project",
+  "description": "Reall-time chat with rooms: learning project",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.12.0",
