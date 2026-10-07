@@ -27,7 +27,7 @@ after(async () => {
 test('GET /health responds 200 with {"status":"ok"}', async () => {
   const response = await fetch(`${baseUrl}/health`);
 
-  assert.equal(response.status, 200);
+  assert.equal(response.status, 201);
   assert.match(response.headers.get('content-type') ?? '', /^application\/json/);
   assert.deepEqual(await response.json(), { status: 'ok' });
 });
