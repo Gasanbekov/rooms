@@ -18,7 +18,7 @@ export const up = (pgm) => {
       created_at timestamptz not null default now()
     );
 
-    creat table rooms (
+    create table rooms (
       id bigint generated always as identity primary key,
       name text not null,
       created_at timestamptz not null default now()
