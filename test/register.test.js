@@ -72,3 +72,44 @@ test('POST /register rejects a duplicate email with 409', async () => {
   assert.equal((await register()).status, 201);
   assert.equal((await register()).status, 409);
 });
+
+/**
+ * @param {string} body
+ */
+const postRaw = (body) =>
+  fetch(`${baseUrl}/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body,
+  });
+
+test('POST /register rejects a body that is not valid JSON with 400', async () => {
+  const response = await postRaw('{"email":');
+
+  assert.equal(response.status, 400);
+  assert.deepEqual(await response.json(), { error: 'invalid_json' });
+});
+
+for (const [name, payload] of [
+  ['an email without @', { email: 'nope', displayName: 'Carl', password: 'secret123' }],
+  ['a missing display name', { email: 'carl@example.com', password: 'secret123' }],
+  ['a too short password', { email: 'carl@example.com', displayName: 'Carl', password: 'short' }],
+  [
+    'a password that is not a string',
+    { email: 'carl@example.com', displayName: 'Carl', password: 12345678 },
+  ],
+]) {
+  test(`POST /register rejects ${name} with 400`, async () => {
+    const response = await postRaw(JSON.stringify(payload));
+
+    assert.equal(response.status, 400);
+    const body = await response.json();
+    assert.equal(body.error, 'validation_error');
+    assert.ok(Array.isArray(body.issues) && body.issues.length > 0);
+
+    const count = await pool.query('select count(*)::int as n from users where email = $1', [
+      'carl@example.com',
+    ]);
+    assert.equal(count.rows[0].n, 0);
+  });
+}
