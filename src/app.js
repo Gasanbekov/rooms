@@ -1,7 +1,14 @@
 import http from 'node:http';
 import { HttpError, readJson, sendJson, validate } from './http.js';
 import { hashPassword, verifyPassword } from './password.js';
-import { loginSchema, registerSchema } from './schemas.js';
+import { createMessage, createRoom, listMessages, listRooms, roomExists } from './rooms.js';
+import {
+  createMessageSchema,
+  createRoomSchema,
+  loginSchema,
+  messagesQuerySchema,
+  registerSchema,
+} from './schemas.js';
 import {
   clearedSessionCookie,
   createSession,
@@ -21,7 +28,8 @@ const DUMMY_HASH = await hashPassword('not-a-real-password');
 export function createApp({ pool }) {
   return http.createServer(async (req, res) => {
     try {
-      const { pathname } = new URL(req.url ?? '/', 'http://localhost');
+      const url = new URL(req.url ?? '/', 'http://localhost');
+      const { pathname } = url;
 
       if (req.method === 'GET' && pathname === '/health') {
         sendJson(res, 200, { status: 'ok' });
@@ -75,6 +83,34 @@ export function createApp({ pool }) {
 
       if (req.method === 'GET' && pathname === '/me') {
         sendJson(res, 200, await requireUser(pool, req));
+        return;
+      }
+
+      if (pathname === '/rooms' && (req.method === 'GET' || req.method === 'POST')) {
+        await requireUser(pool, req);
+        if (req.method === 'GET') {
+          sendJson(res, 200, await listRooms(pool));
+        } else {
+          const { name } = validate(createRoomSchema, await readJson(req));
+          sendJson(res, 201, await createRoom(pool, name));
+        }
+        return;
+      }
+
+      const messagesPath = pathname.match(/^\/rooms\/(\d{1,15})\/messages$/);
+      if (messagesPath && (req.method === 'GET' || req.method === 'POST')) {
+        const user = await requireUser(pool, req);
+        const roomId = messagesPath[1];
+        if (!(await roomExists(pool, roomId))) {
+          throw new HttpError(404, 'room_not_found');
+        }
+        if (req.method === 'GET') {
+          const page = validate(messagesQuerySchema, Object.fromEntries(url.searchParams));
+          sendJson(res, 200, await listMessages(pool, roomId, page));
+        } else {
+          const { body } = validate(createMessageSchema, await readJson(req));
+          sendJson(res, 201, await createMessage(pool, roomId, user, body));
+        }
         return;
       }
 
