@@ -1,11 +1,11 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
-import pg from 'pg';
 import { createApp } from '../src/app.js';
 import { verifyPassword } from '../src/password.js';
+import { createTestPool } from '../test-support/database.js';
 
-/** @type {pg.Pool} */
+/** @type {import('pg').Pool} */
 let pool;
 
 /** @type {import('node:http').Server} */
@@ -15,8 +15,7 @@ let server;
 let baseUrl;
 
 before(async () => {
-  pool = new pg.Pool({ connectionString: process.env.TEST_DATABASE_URL });
-  await pool.query('truncate users cascade');
+  pool = await createTestPool();
   server = createApp({ pool });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
