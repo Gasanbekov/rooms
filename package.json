@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node --env-file-if-exists=.env --test --test-concurrency=1",
     "start": "node src/index.js",
+    "dev:web": "npm run dev --prefix web",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
