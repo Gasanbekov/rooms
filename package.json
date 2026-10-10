@@ -4,7 +4,7 @@
   "description": "Real-time chat with rooms: learning project",
   "scripts": {
     "test": "node --env-file-if-exists=.env --test --test-concurrency=1 \"test/**/*.test.js\"",
-    "start": "node src/index.js",
+    "start": "node --env-file-if-exists=.env src/index.js",
     "dev:web": "npm run dev --prefix web",
     "lint": "eslint .",
     "format": "prettier --write .",
