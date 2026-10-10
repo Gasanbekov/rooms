@@ -1,4 +1,5 @@
 import { test, before, after } from 'node:test';
+import { pool } from '../src/db.js';
 import assert from 'node:assert/strict';
 import { createApp } from '../src/app.js';
 import { once } from 'node:events';
@@ -10,7 +11,7 @@ let server;
 let baseUrl;
 
 before(async () => {
-  server = createApp();
+  server = createApp({ pool });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const address = server.address();
