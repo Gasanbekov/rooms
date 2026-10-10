@@ -1,20 +1,22 @@
-import { useEffect, useState } from 'react';
-
-type ServerState = 'checking' | 'online' | 'offline';
+import { BrowserRouter, Route, Routes } from 'react-router';
+import { AuthProvider } from './AuthProvider';
+import RequireAuth from './RequireAuth';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 export default function App() {
-  const [server, setServer] = useState<ServerState>('checking');
-
-  useEffect(() => {
-    fetch('/api/health')
-      .then((response) => setServer(response.ok ? 'online' : 'offline'))
-      .catch(() => setServer('offline'));
-  }, []);
-
   return (
-    <main>
-      <h1>Rooms</h1>
-      <p>Server: {server}</p>
-    </main>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route element={<RequireAuth />}>
+            <Route path="/" element={<HomePage />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
