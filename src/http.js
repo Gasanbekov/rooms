@@ -19,9 +19,10 @@ export class HttpError extends Error {
  * @param {import('node:http').ServerResponse} res
  * @param {number} status
  * @param {unknown} body
+ * @param {Record<string, string>} [headers]
  */
-export function sendJson(res, status, body) {
-  res.writeHead(status, { 'Content-Type': 'application/json' });
+export function sendJson(res, status, body, headers = {}) {
+  res.writeHead(status, { 'Content-Type': 'application/json', ...headers });
   res.end(JSON.stringify(body));
 }
 

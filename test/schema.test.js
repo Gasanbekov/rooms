@@ -30,17 +30,17 @@ after(async () => {
   await pool.end();
 });
 
-test('migrations create users, rooms and messages tables', async () => {
+test('migrations create users, rooms, messages and sessions tables', async () => {
   const result = await pool.query(
     `select table_name from information_schema.tables
      where table_schema = 'public' and table_name = any($1)
      order by table_name`,
-    [['messages', 'rooms', 'users']],
+    [['messages', 'rooms', 'sessions', 'users']],
   );
 
   assert.deepEqual(
     result.rows.map((row) => row.table_name),
-    ['messages', 'rooms', 'users'],
+    ['messages', 'rooms', 'sessions', 'users'],
   );
 });
 
